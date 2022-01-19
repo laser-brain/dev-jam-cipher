@@ -34,6 +34,7 @@ const rows = [
   ["A", "S", "D", "F", "G", "H", "J", "K", "L", "ENTER"],
   ["Z", "X", "C", "V", "B", "N", "M", ",", ".", "?"]
 ]
+const typeSound = new Audio('/src/assets/audio/type.wav')
 
 onMounted(() => {
   window.addEventListener('keydown', inputStart)
@@ -91,6 +92,9 @@ const inputStart = (e: KeyboardEvent) => {
     const elementId = pressedKey === " " ? "space" : pressedKey
     const element = keyRefs.value.filter(el => el?.id === elementId)[0];
     element?.classList.add('pressed')
+    typeSound.pause();
+    typeSound.currentTime = 0;
+    typeSound.play();
   }
 }
 const inputEnd = (e: KeyboardEvent) => {
@@ -155,6 +159,10 @@ const emit = defineEmits(['key-input'])
     inset 20px 20px 20px -20px rgba(255, 255, 255, 1),
     0px 0px 18px 12px rgba(0, 0, 0, 1);
   margin: 10px 10px 0 0;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .key,
