@@ -31,7 +31,7 @@ watch(() => props.text, (old, newV) => {
 
 textarea {
   font-family: "Special Elite", cursive;
-  font-size: 1.5em;
+  font-size: 1em;
   text-transform: uppercase;
   width: calc(100% - 2em);
   height: calc(100% - 2em);

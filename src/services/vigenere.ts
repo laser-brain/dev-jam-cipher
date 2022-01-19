@@ -19,6 +19,7 @@ class Vigenere {
     "\r",
     ",",
     ".",
+    "?",
   ];
   _alphabets: IAlphabet = {};
 

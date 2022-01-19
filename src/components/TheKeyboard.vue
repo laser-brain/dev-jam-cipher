@@ -15,6 +15,7 @@
       </div>
     </div>
     <div
+      class="key row"
       id="space"
       @click="clickKey"
       @mousedown="startClickKey"
@@ -27,12 +28,11 @@
 import { onMounted, onUnmounted, Ref } from "@vue/runtime-core";
 import { ref } from "vue";
 let refIndex = 0;
-const keyboardScale = ref(0.7)
 const rows = [
   ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "BACKSPACE",],
   ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",],
   ["A", "S", "D", "F", "G", "H", "J", "K", "L", "ENTER"],
-  ["Z", "X", "C", "V", "B", "N", "M", ",", "."]
+  ["Z", "X", "C", "V", "B", "N", "M", ",", ".", "?"]
 ]
 
 const keyboardBox: Ref<Element | null> = ref(null);
@@ -125,11 +125,10 @@ const emit = defineEmits(['key-input'])
 <style scoped lang="scss">
 .keyboard {
   position: absolute;
-  padding-top: 20px;
-  padding: 50px;
+  padding: 20px;
   bottom: 5px;
-  left: calc(50vw - 500px);
-  width: 1000px;
+  left: calc(50vw - 350px);
+  width: 700px;
   background-color: #1a1f33;
   display: flex;
   flex-wrap: wrap;
@@ -137,34 +136,33 @@ const emit = defineEmits(['key-input'])
   box-shadow: inset -1px -5px 66px 44px rgba(0, 0, 0, 1),
     -10px -10px 14px -4px #1a1f33;
   justify-content: center;
-  transform: scale(0.7);
 
   @media screen and (orientation: portrait) {
     transform: scale(0.37);
-    left: -345px;
   }
 
   .row {
     display: flex;
-    height: 80px;
+    height: 35px;
+    margin-top: 10px;
     justify-content: space-around;
   }
 }
 
 .key {
   box-sizing: border-box;
-  border: 5px solid #fafdfe;
-  width: 60px;
-  height: 60px;
+  border: 3px solid #fafdfe;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   padding-top: 0.5em;
-  font-size: 1.5em;
+  font-size: 1em;
   background-color: black;
-  color: gray;
+  color: white;
   box-shadow: inset -10px -10px 10px -10px rgba(0, 0, 0, 0.58),
     inset 20px 20px 20px -20px rgba(255, 255, 255, 1),
     0px 0px 18px 12px rgba(0, 0, 0, 1);
-  margin: 10px;
+  margin: 10px 10px 0 0;
 }
 
 .key,
@@ -183,17 +181,11 @@ const emit = defineEmits(['key-input'])
 
 #space {
   display: flex;
-  height: 80px;
   justify-content: space-around;
   background-color: black;
   border-radius: 20px;
+  margin-top: 40px;
   width: 60%;
-  height: 60px;
-  margin: 20px 0 20px 0;
-  box-shadow: inset -10px -10px 10px -10px rgba(0, 0, 0, 0.58),
-    inset 20px 20px 20px -20px rgba(255, 255, 255, 1),
-    0px 0px 18px 12px rgba(0, 0, 0, 1);
-  border: 5px solid #fafdfe;
 }
 
 #ENTER {
@@ -201,15 +193,6 @@ const emit = defineEmits(['key-input'])
   justify-content: center;
   background-color: black;
   border-radius: 20px;
-  width: 120px;
-  height: 60px;
-  box-shadow: -1px -10px 12px -4px rgba(0, 0, 0, 0.5),
-    -19px -5px 12px -4px rgba(0, 0, 0, 1),
-    inset -5px -5px 6px 1px rgba(255, 255, 255, 0.3),
-    10px 10px 26px -3px rgba(0, 0, 0, 0.87);
-}
-
-img.letter {
-  background-color: gray;
+  width: 100px;
 }
 </style>
