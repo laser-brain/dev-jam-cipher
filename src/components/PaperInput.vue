@@ -23,11 +23,6 @@ watch(() => props.text, (old, newV) => {
 </script>
 
 <style scoped lang="scss">
-.paper {
-  width: 100%;
-  height: 100%;
-  background-image: url("/src/assets/simple-old-paper-3-8.jpg");
-}
 
 textarea {
   font-family: "Special Elite", cursive;

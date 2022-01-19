@@ -5,6 +5,11 @@ import TheKeyboard from './components/TheKeyboard.vue';
 import PaperInput from './components/PaperInput.vue';
 import TheConfigBar from './components/TheConfigBar.vue';
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(faCheck)
 const input = ref('');
 const encoded = ref('');
 watch(input, (newValue, _) => {
@@ -31,6 +36,14 @@ const reevaluate = () => {
   <the-config-bar @keyUpdated="reevaluate" />
   <div class="flex">
     <div class="sheet">
+      <div class="paper settings">
+        <label>cipher key:</label>
+        <input type="text" value="test" />
+        <label>automatic conversion:</label>
+        <font-awesome-icon icon="check" />
+      </div>
+    </div>
+    <div class="sheet">
       <paper-input :text="input" />
     </div>
     <div class="sheet">
@@ -40,7 +53,7 @@ const reevaluate = () => {
   <the-keyboard @key-input="e => parseInput(e.key)" />
 </template>
 
-<style>
+<style lang="scss">
 * {
   margin: 0;
   padding: 0;
@@ -52,13 +65,43 @@ body,
 
 .flex {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
 }
+
+.settings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 25px;
+
+  label,
+  input {
+    font-size: 2em;
+    font-family: "Oooh Baby", cursive;
+  }
+
+  input {
+    border: none;
+    max-width: 50%;
+    background: transparent;
+    border-bottom: 1px dashed black;
+  }
+}
+
 .sheet {
   width: 25vw;
   height: calc(100vh - (45px * 5) - 7em - 40px);
   padding: 10px;
 }
+
+.paper {
+  width: 100%;
+  height: 100%;
+  background-image: url("/src/assets/simple-old-paper-3-8.jpg");
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
