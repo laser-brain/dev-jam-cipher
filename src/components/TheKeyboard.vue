@@ -1,5 +1,5 @@
 <template>
-  <div ref="keyboardBox" class="keyboard" @mouseover="initDrag">
+  <div class="keyboard">
     <div class="row" v-for="row, index in rows" :key="index">
       <div
         class="key"
@@ -34,14 +34,6 @@ const rows = [
   ["A", "S", "D", "F", "G", "H", "J", "K", "L", "ENTER"],
   ["Z", "X", "C", "V", "B", "N", "M", ",", ".", "?"]
 ]
-
-const keyboardBox: Ref<Element | null> = ref(null);
-
-const initDrag = () => {
-  if (keyboardBox.value) {
-    keyboardBox.value.classList.add
-  }
-}
 
 onMounted(() => {
   window.addEventListener('keydown', inputStart)

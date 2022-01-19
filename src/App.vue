@@ -52,11 +52,11 @@ body,
 
 .flex {
   display: flex;
-  height: 100%;
+  justify-content: center;
 }
 .sheet {
-  width: 50vw;
-  height: 100%;
+  width: 25vw;
+  height: calc(100vh - (45px * 5) - 7em - 40px);
   padding: 10px;
 }
 #app {
@@ -64,5 +64,6 @@ body,
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+  background: url("/src/assets/stained-wooden-texture-table.jpg");
 }
 </style>
