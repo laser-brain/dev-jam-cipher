@@ -26,13 +26,13 @@
     
       <font-awesome-icon
         icon="volume-up"
-         v-show="!playAudio"
-         @click="changePlayAudio(true)"
+         v-show="playAudio"
+         @click="changePlayAudio(false)"
       />
       <font-awesome-icon
         icon="volume-mute"
-         v-show="playAudio"
-         @click="changePlayAudio(false)"
+         v-show="!playAudio"
+         @click="changePlayAudio(true)"
       />
   </div>
 </template>
