@@ -103,7 +103,7 @@ const clickKey = (e: MouseEvent) => {
     }
     target.classList.remove("pressed");
     if (validInputKeyPressed(target.id)) {
-      const keyValue = target.id === "ENTER" ? "\r" : target.id;
+      const keyValue = target.id === "ENTER" ? "\n" : target.id;
       emit("key-input", { key: keyValue });
     }
   }
@@ -141,7 +141,7 @@ const inputEnd = (e: KeyboardEvent) => {
     const elementId = pressedKey === " " ? "space" : pressedKey;
     const element = keyRefs.value.filter((el) => el?.id === elementId)[0];
     element?.classList.remove("pressed");
-    const keyValue = pressedKey === "ENTER" ? "\r" : pressedKey;
+    const keyValue = pressedKey === "ENTER" ? "\n" : pressedKey;
 
     emit("key-input", { key: keyValue });
   }

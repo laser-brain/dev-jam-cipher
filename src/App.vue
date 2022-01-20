@@ -19,8 +19,6 @@ watch(input, () => {
   }
 });
 
-const generateOutput = (input: string) => {};
-
 const parseInput = (text: string) => {
   if (text === "BACKSPACE") {
     input.value = input.value.slice(0, -1);
@@ -45,13 +43,13 @@ const toggleAutoUpdateOutput = () => {
 };
 
 const toggleMode = () => {
-  mode.value = mode.value === "encode" ? "decode" : "encode";  
+  mode.value = mode.value === "encode" ? "decode" : "encode";
   updateOutput();
 };
 
 const updateOutput = () => {
-  if(!input.value){
-    output.value = '';
+  if (!input.value) {
+    output.value = "";
     return;
   }
   let result = "";
@@ -65,8 +63,7 @@ const updateOutput = () => {
     default:
       break;
   }
-  console.log(result);
-  
+
   if (autoUpdateOutput.value) {
     output.value = result;
   } else {
@@ -90,6 +87,12 @@ window.addEventListener("keydown", function (e) {
     e.preventDefault();
   }
 });
+
+const processPaste = (data: string) => {
+  console.log(data);  
+  input.value = data;
+  updateOutput();
+};
 </script>
 
 <template>
@@ -104,10 +107,15 @@ window.addEventListener("keydown", function (e) {
       />
     </div>
     <div class="sheet typed">
-      <paper-input :text="input" />
+      <paper-input
+        :text="input"
+        :enable-paste="true"
+        @paste="processPaste"
+        :key="input"
+      />
     </div>
     <div class="sheet handwriting">
-      <paper-input :text="output" />
+      <paper-input :text="output" :enable-copy="true" :key="output" />
     </div>
   </div>
 
