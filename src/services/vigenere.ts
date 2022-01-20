@@ -3,7 +3,7 @@ interface IAlphabet {
 }
 
 class Vigenere {
-  _key: string = "AYUSH";
+  _key: string = "";
   _ignoreKeys = [
     "1",
     "2",
@@ -41,6 +41,7 @@ class Vigenere {
       alphabet = alphabet.slice(1);
       alphabet.push(firstChar);
     }
+    this._key = localStorage.getItem('cipherKey') || '';
   }
 
   setKey(key: string) {

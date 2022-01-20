@@ -1,56 +1,90 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import vigenere from './services/vigenere';
-import TheKeyboard from './components/TheKeyboard.vue';
-import PaperInput from './components/PaperInput.vue';
-import TheConfigBar from './components/TheConfigBar.vue';
+import { ref, watch } from "vue";
+import vigenere from "./services/vigenere";
+import TheKeyboard from "./components/TheKeyboard.vue";
+import PaperInput from "./components/PaperInput.vue";
+import TheConfigNote from "./components/TheConfigNote.vue";
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCheck } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+const input = ref("");
+const encoded = ref("");
+const autoUpdateOutput = ref(true);
 
-library.add(faCheck)
-const input = ref('');
-const encoded = ref('');
-watch(input, (newValue, _) => {
-  encoded.value = vigenere.encode(newValue);
-  console.log(vigenere._key)
-})
+watch(input, () => {
+  if(autoUpdateOutput.value) {
+    generateOutput(input.value);
+  }
+});
 
-const ignoredChars = ["\r", ",", ".", "/"];
+const generateOutput = (input: string) => {
+console.log(  'generateOutput');
+  const result = vigenere.encode(input)
+  if(autoUpdateOutput.value) {
+    encoded.value = result;
+  }
+  else {
+    const partialResult = result.substring(encoded.value.length);
+    let i =0;
+    const write = window.setInterval(() => {
+      encoded.value += partialResult[i++];
+      if(i === partialResult.length) {
+        clearInterval(write);
+      }
+    }, 200);
+  }
+};
 
 const parseInput = (text: string) => {
   if (text === "BACKSPACE") {
     input.value = input.value.slice(0, -1);
   } else {
-    input.value += text
+    input.value += text;
   }
-}
+};
 
 const reevaluate = () => {
-  encoded.value = vigenere.encode(input.value);
-}
+     encoded.value = vigenere.encode(input.value);
+     localStorage.setItem('cipherKey', vigenere._key);
+};
+
+const toggleAutoUpdateOutput = () => {
+  autoUpdateOutput.value = !autoUpdateOutput.value;
+  console.log('autoUpdateOutput.value=', autoUpdateOutput.value);
+  
+  if(!autoUpdateOutput.value) {
+    encoded.value = '';
+  }
+};
+
+window.addEventListener("keydown", function (e) {
+  if (e.key == "space" && e.target == document.body) {
+    e.preventDefault();
+  }
+});
 </script>
 
 <template>
-  <the-config-bar @keyUpdated="reevaluate" />
-  <div class="flex">
-    <div class="sheet">
-      <div class="paper settings">
-        <label>cipher key:</label>
-        <input type="text" value="test" />
-        <label>automatic conversion:</label>
-        <font-awesome-icon icon="check" />
-      </div>
+  <div class="flex offset-top">
+    <div class="sheet handwriting">
+      <the-config-note
+        @keyUpdated="reevaluate"
+        @automatic-conversion-changed="toggleAutoUpdateOutput"
+        @convert="generateOutput(input)"
+      />
     </div>
-    <div class="sheet">
+    <div class="sheet typed">
       <paper-input :text="input" />
     </div>
-    <div class="sheet">
+    <div class="sheet handwriting">
       <paper-input :text="encoded" />
     </div>
   </div>
-  <the-keyboard @key-input="e => parseInput(e.key)" />
+  
+    <div class="paper sheet handwriting info">
+      <p>Start typing on your keyboard or click the typewriter's keys to input text</p>
+      <p>To enable encoding, a cipher key has to be set!</p>
+      <p>If automatic conversion is disabled, click on the feather icon to encode the input text.</p>
+    </div>
+  <the-keyboard @key-input="(e) => parseInput(e.key)" />
 </template>
 
 <style lang="scss">
@@ -58,6 +92,11 @@ const reevaluate = () => {
   margin: 0;
   padding: 0;
 }
+
+.offset-top {
+  padding-top: 7em;
+}
+
 body,
 #app {
   height: 100vh;
@@ -68,28 +107,6 @@ body,
   justify-content: space-between;
 }
 
-.settings {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 25px;
-
-  label,
-  input {
-    font-size: 2em;
-    font-family: "Oooh Baby", cursive;
-  }
-
-  input {
-    border: none;
-    max-width: 50%;
-    background: transparent;
-    border-bottom: 1px dashed black;
-  }
-}
-
 .sheet {
   width: 25vw;
   height: calc(100vh - (45px * 5) - 7em - 40px);
@@ -97,16 +114,37 @@ body,
 }
 
 .paper {
-  width: 100%;
   height: 100%;
+  padding: 32px;
   background-image: url("/src/assets/simple-old-paper-3-8.jpg");
+}
+
+.handwriting {
+  * {
+    font-size: 1.5rem;
+    font-family: "Oooh Baby", cursive;
+  }
+}
+
+.typed {
+  * {
+    font-family: "Special Elite", cursive;
+    font-size: 1rem;
+    text-transform: uppercase;
+  }
+}
+
+.info {
+  max-height: 8em;
+  max-width: 24em;
+  padding: 2em;
+  margin: 1em;
 }
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   background: url("/src/assets/stained-wooden-texture-table.jpg");
 }
 </style>

@@ -66,6 +66,7 @@ const startClickKey = (e: MouseEvent) => {
     target.classList.add('pressed');
   }
 }
+
 const clickKey = (e: MouseEvent) => {
   if (e.target instanceof Element) {
     let target = e.target;
@@ -123,7 +124,7 @@ const emit = defineEmits(['key-input'])
   position: absolute;
   padding: 20px;
   bottom: 5px;
-  left: calc(50vw - 350px);
+  left: calc(50vw - 370px);
   width: 700px;
   background-color: #1a1f33;
   display: flex;
@@ -132,7 +133,7 @@ const emit = defineEmits(['key-input'])
   box-shadow: inset -1px -5px 66px 44px rgba(0, 0, 0, 1),
     -10px -10px 14px -4px #1a1f33;
   justify-content: center;
-
+text-align: center;
   @media screen and (orientation: portrait) {
     transform: scale(0.37);
   }

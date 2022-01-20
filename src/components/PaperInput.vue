@@ -25,9 +25,6 @@ watch(() => props.text, (old, newV) => {
 <style scoped lang="scss">
 
 textarea {
-  font-family: "Special Elite", cursive;
-  font-size: 1em;
-  text-transform: uppercase;
   width: calc(100% - 2em);
   height: calc(100% - 2em);
   text-align: start;
