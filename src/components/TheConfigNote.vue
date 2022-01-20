@@ -23,20 +23,36 @@
         @click="emit('convert')"
       />
     </div>
+    
+      <font-awesome-icon
+        icon="volume-up"
+         v-show="!playAudio"
+         @click="changePlayAudio(true)"
+      />
+      <font-awesome-icon
+        icon="volume-mute"
+         v-show="playAudio"
+         @click="changePlayAudio(false)"
+      />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faFeatherAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFeatherAlt,
+  faVolumeUp,
+  faVolumeMute,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import vigenere from "../services/vigenere";
 
-library.add(faFeatherAlt);
+library.add(faFeatherAlt, faVolumeUp, faVolumeMute);
 
 const emit = defineEmits([
   "keyUpdated",
+  "playAudioChanged",
   "automaticConversionChanged",
   "convert",
 ]);
@@ -55,12 +71,24 @@ watch(encodingKey, (newValue, oldValue) => {
   emit("keyUpdated");
 });
 
-const automaticConversion = ref(true);
+const playAudio = ref(localStorage.getItem('playAudio') === 'true');
+  emit("playAudioChanged");
+const changePlayAudio = (value: boolean) => {
+  if (playAudio.value === value) {
+    return;
+  }
+  
+  playAudio.value = value;
+  localStorage.setItem('playAudio', value ? 'true': 'false');
+  emit("playAudioChanged");
+}
+const automaticConversion = ref(localStorage.getItem('automaticConversion') === 'true');
 const changeAutomaticConversion = (value: boolean) => {
   if (automaticConversion.value === value) {
     return;
   }
   automaticConversion.value = value;
+  localStorage.setItem('automaticConversion', value ? 'true': 'false');
   emit("automaticConversionChanged");
 };
 </script>
@@ -96,7 +124,7 @@ const changeAutomaticConversion = (value: boolean) => {
 .min-1em {
   min-width: 1em;
 }
-.fa-feather-alt {
+.svg-inline--fa {
   cursor: pointer;
 }
 </style>

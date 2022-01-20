@@ -1,12 +1,16 @@
 <template>
   <div class="keyboard">
-    <div class="row" v-for="row, index in rows" :key="index">
+    <div class="row" v-for="(row, index) in rows" :key="index">
       <div
         class="key"
         v-for="letter in row"
         :key="letter"
         :id="letter"
-        :ref="el => { keyRefs[refIndex++] = getElement(el) }"
+        :ref="
+          (el) => {
+            keyRefs[refIndex++] = getElement(el);
+          }
+        "
         @click="clickKey"
         @mousedown="startClickKey"
       >
@@ -19,7 +23,11 @@
       id="space"
       @click="clickKey"
       @mousedown="startClickKey"
-      :ref="el => { keyRefs[refIndex++] = getElement(el) }"
+      :ref="
+        (el) => {
+          keyRefs[refIndex++] = getElement(el);
+        }
+      "
     />
   </div>
 </template>
@@ -27,34 +35,48 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, Ref } from "@vue/runtime-core";
 import { ref } from "vue";
+
+const props = defineProps({
+  playAudio: {
+    type: Boolean,
+    required: true,
+  },
+});
+
 let refIndex = 0;
 const rows = [
-  ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "BACKSPACE",],
-  ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",],
+  ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "BACKSPACE"],
+  ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
   ["A", "S", "D", "F", "G", "H", "J", "K", "L", "ENTER"],
-  ["Z", "X", "C", "V", "B", "N", "M", ",", ".", "?"]
-]
-const typeSound = new Audio('/src/assets/audio/type.wav')
+  ["Z", "X", "C", "V", "B", "N", "M", ",", ".", "?"],
+];
+
+const typeSound = props.playAudio
+  ? new Audio("/src/assets/audio/type.wav")
+  : null;
 
 onMounted(() => {
-  window.addEventListener('keydown', inputStart)
-  window.addEventListener('keyup', inputEnd)
+  window.addEventListener("keydown", inputStart);
+  window.addEventListener("keyup", inputEnd);
 });
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', inputStart)
-  window.removeEventListener('keyup', inputEnd)
+  window.removeEventListener("keydown", inputStart);
+  window.removeEventListener("keyup", inputEnd);
 });
 
 const getElement = (el: any) => {
   return el as Element;
-}
+};
 
 const validInputKeyPressed = (pressedKey: string) => {
-  return pressedKey === " " || rows.filter(row => {
-    return row.indexOf(pressedKey) !== -1
-  }).length > 0
-}
+  return (
+    pressedKey === " " ||
+    rows.filter((row) => {
+      return row.indexOf(pressedKey) !== -1;
+    }).length > 0
+  );
+};
 
 const startClickKey = (e: MouseEvent) => {
   if (e.target instanceof Element) {
@@ -63,9 +85,15 @@ const startClickKey = (e: MouseEvent) => {
       target = target.parentElement as Element;
     }
 
-    target.classList.add('pressed');
+    target.classList.add("pressed");
+    if (!typeSound) {
+      return;
+    }
+    typeSound.pause();
+    typeSound.currentTime = 0;
+    typeSound.play();
   }
-}
+};
 
 const clickKey = (e: MouseEvent) => {
   if (e.target instanceof Element) {
@@ -73,50 +101,54 @@ const clickKey = (e: MouseEvent) => {
     if (!target.id) {
       target = target.parentElement as Element;
     }
-    target.classList.remove('pressed');
+    target.classList.remove("pressed");
     if (validInputKeyPressed(target.id)) {
-      const keyValue = target.id === "ENTER" ? "\r" : target.id
-      emit('key-input', { key: keyValue });
+      const keyValue = target.id === "ENTER" ? "\r" : target.id;
+      emit("key-input", { key: keyValue });
     }
   }
-}
+};
 
 const inputStart = (e: KeyboardEvent) => {
   if (e.target instanceof Element) {
-    if (e.target.classList.contains('overrideKeyboard')) {
+    if (e.target.classList.contains("overrideKeyboard")) {
       return;
     }
   }
 
   let pressedKey = e.key.toUpperCase();
   if (validInputKeyPressed(pressedKey)) {
-    const elementId = pressedKey === " " ? "space" : pressedKey
-    const element = keyRefs.value.filter(el => el?.id === elementId)[0];
-    element?.classList.add('pressed')
+    const elementId = pressedKey === " " ? "space" : pressedKey;
+    const element = keyRefs.value.filter((el) => el?.id === elementId)[0];
+    element?.classList.add("pressed");
+
+    if (!typeSound) {
+      return;
+    }
     typeSound.pause();
     typeSound.currentTime = 0;
     typeSound.play();
   }
-}
+};
 const inputEnd = (e: KeyboardEvent) => {
   if (e.target instanceof Element) {
-    if (e.target.classList.contains('overrideKeyboard')) {
+    if (e.target.classList.contains("overrideKeyboard")) {
       return;
     }
   }
   let pressedKey = e.key.toUpperCase();
   if (validInputKeyPressed(pressedKey)) {
-    const elementId = pressedKey === " " ? "space" : pressedKey
-    const element = keyRefs.value.filter(el => el?.id === elementId)[0];
-    element?.classList.remove('pressed')
-    const keyValue = pressedKey === "ENTER" ? "\r" : pressedKey
+    const elementId = pressedKey === " " ? "space" : pressedKey;
+    const element = keyRefs.value.filter((el) => el?.id === elementId)[0];
+    element?.classList.remove("pressed");
+    const keyValue = pressedKey === "ENTER" ? "\r" : pressedKey;
 
-    emit('key-input', { key: keyValue });
+    emit("key-input", { key: keyValue });
   }
-}
+};
 const keyRefs: Ref<(Element | null)[]> = ref([]);
 
-const emit = defineEmits(['key-input'])
+const emit = defineEmits(["key-input"]);
 </script>
 
 <style scoped lang="scss">
@@ -133,7 +165,7 @@ const emit = defineEmits(['key-input'])
   box-shadow: inset -1px -5px 66px 44px rgba(0, 0, 0, 1),
     -10px -10px 14px -4px #1a1f33;
   justify-content: center;
-text-align: center;
+  text-align: center;
   @media screen and (orientation: portrait) {
     transform: scale(0.37);
   }

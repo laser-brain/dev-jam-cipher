@@ -8,6 +8,7 @@ import TheConfigNote from "./components/TheConfigNote.vue";
 const input = ref("");
 const encoded = ref("");
 const autoUpdateOutput = ref(true);
+const playAudio = ref(false);
 
 watch(input, () => {
   if(autoUpdateOutput.value) {
@@ -16,7 +17,6 @@ watch(input, () => {
 });
 
 const generateOutput = (input: string) => {
-console.log(  'generateOutput');
   const result = vigenere.encode(input)
   if(autoUpdateOutput.value) {
     encoded.value = result;
@@ -48,12 +48,17 @@ const reevaluate = () => {
 
 const toggleAutoUpdateOutput = () => {
   autoUpdateOutput.value = !autoUpdateOutput.value;
-  console.log('autoUpdateOutput.value=', autoUpdateOutput.value);
   
   if(!autoUpdateOutput.value) {
     encoded.value = '';
+  }  else {
+     encoded.value = vigenere.encode(input.value);
   }
 };
+
+const togglePlayAudio = () => {
+  playAudio.value = !playAudio.value;
+}
 
 window.addEventListener("keydown", function (e) {
   if (e.key == "space" && e.target == document.body) {
@@ -68,6 +73,7 @@ window.addEventListener("keydown", function (e) {
       <the-config-note
         @keyUpdated="reevaluate"
         @automatic-conversion-changed="toggleAutoUpdateOutput"
+        @play-audio-changed="togglePlayAudio"
         @convert="generateOutput(input)"
       />
     </div>
@@ -84,7 +90,7 @@ window.addEventListener("keydown", function (e) {
       <p>To enable encoding, a cipher key has to be set!</p>
       <p>If automatic conversion is disabled, click on the feather icon to encode the input text.</p>
     </div>
-  <the-keyboard @key-input="(e) => parseInput(e.key)" />
+  <the-keyboard @key-input="(e) => parseInput(e.key)" :play-audio="playAudio" :key="`keyboard_${playAudio}`" />
 </template>
 
 <style lang="scss">
