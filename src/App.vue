@@ -119,7 +119,7 @@ const processPaste = (data: string) => {
     </div>
   </div>
 
-  <div class="paper sheet handwriting info">
+  <div id="info" class="paper sheet handwriting">
     <p>
       Start typing on your keyboard or click the typewriter's keys to input text
     </p>
@@ -143,7 +143,7 @@ const processPaste = (data: string) => {
 }
 
 .offset-top {
-  padding-top: 7em;
+  padding-top: 4vh;
 }
 
 body,
@@ -158,7 +158,7 @@ body,
 
 .sheet {
   width: 25vw;
-  height: calc(100vh - (45px * 5) - 7em - 40px);
+  height: 60vh;
   padding: 10px;
 }
 
@@ -183,11 +183,13 @@ body,
   }
 }
 
-.info {
-  max-height: 8em;
-  max-width: 24em;
-  padding: 2em;
+#info {
   margin: 1em;
+  margin-top: -1vh;
+  height: 30vh;
+  width: 23vw;
+  padding: 2em;
+  font-size: .1em;
 }
 
 #app {

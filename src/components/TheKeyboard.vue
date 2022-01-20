@@ -156,8 +156,8 @@ const emit = defineEmits(["key-input"]);
   position: absolute;
   padding: 20px;
   bottom: 5px;
-  left: calc(50vw - 370px);
-  width: 700px;
+  left: calc(50vw - 25vw);
+  width: 50vw;
   background-color: #1a1f33;
   display: flex;
   flex-wrap: wrap;
@@ -172,8 +172,8 @@ const emit = defineEmits(["key-input"]);
 
   .row {
     display: flex;
-    height: 35px;
-    margin-top: 10px;
+    height: 5vh;
+    margin-top: 2vh;
     justify-content: space-around;
   }
 }
@@ -181,8 +181,8 @@ const emit = defineEmits(["key-input"]);
 .key {
   box-sizing: border-box;
   border: 3px solid #fafdfe;
-  width: 40px;
-  height: 40px;
+  width: 3vw;
+  height: 3vw;
   border-radius: 50%;
   padding-top: 0.5em;
   font-size: 1em;
