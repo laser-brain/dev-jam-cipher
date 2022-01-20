@@ -6,32 +6,20 @@ import PaperInput from "./components/PaperInput.vue";
 import TheConfigNote from "./components/TheConfigNote.vue";
 
 const input = ref("");
-const encoded = ref("");
-const autoUpdateOutput = ref(localStorage.getItem('automaticConversion') === 'true');
-const playAudio = ref(localStorage.getItem('playAudio') === 'true');
+const output = ref("");
+const autoUpdateOutput = ref(
+  localStorage.getItem("automaticConversion") === "true"
+);
+const playAudio = ref(localStorage.getItem("playAudio") === "true");
+const mode = ref(localStorage.getItem("mode") || "encode");
 
 watch(input, () => {
-  if(autoUpdateOutput.value) {
-    generateOutput(input.value);
+  if (autoUpdateOutput.value) {
+    updateOutput();
   }
 });
 
-const generateOutput = (input: string) => {
-  const result = vigenere.encode(input)
-  if(autoUpdateOutput.value) {
-    encoded.value = result;
-  }
-  else {
-    const partialResult = result.substring(encoded.value.length);
-    let i =0;
-    const write = window.setInterval(() => {
-      encoded.value += partialResult[i++];
-      if(i === partialResult.length) {
-        clearInterval(write);
-      }
-    }, 200);
-  }
-};
+const generateOutput = (input: string) => {};
 
 const parseInput = (text: string) => {
   if (text === "BACKSPACE") {
@@ -42,23 +30,60 @@ const parseInput = (text: string) => {
 };
 
 const reevaluate = () => {
-     encoded.value = vigenere.encode(input.value);
-     localStorage.setItem('cipherKey', vigenere._key);
+  localStorage.setItem("cipherKey", vigenere._key);
+  updateOutput();
 };
 
 const toggleAutoUpdateOutput = () => {
   autoUpdateOutput.value = !autoUpdateOutput.value;
+
+  if (!autoUpdateOutput.value) {
+    output.value = "";
+  } else {
+    updateOutput();
+  }
+};
+
+const toggleMode = () => {
+  mode.value = mode.value === "encode" ? "decode" : "encode";  
+  updateOutput();
+};
+
+const updateOutput = () => {
+  if(!input.value){
+    output.value = '';
+    return;
+  }
+  let result = "";
+  switch (mode.value) {
+    case "encode":
+      result = vigenere.encode(input.value);
+      break;
+    case "decode":
+      result = vigenere.decode(input.value);
+      break;
+    default:
+      break;
+  }
+  console.log(result);
   
-  if(!autoUpdateOutput.value) {
-    encoded.value = '';
-  }  else {
-     encoded.value = vigenere.encode(input.value);
+  if (autoUpdateOutput.value) {
+    output.value = result;
+  } else {
+    const partialResult = result.substring(output.value.length);
+    let i = 0;
+    const write = window.setInterval(() => {
+      output.value += partialResult[i++];
+      if (i === partialResult.length) {
+        clearInterval(write);
+      }
+    }, 200);
   }
 };
 
 const togglePlayAudio = () => {
   playAudio.value = !playAudio.value;
-}
+};
 
 window.addEventListener("keydown", function (e) {
   if (e.key == "space" && e.target == document.body) {
@@ -74,23 +99,33 @@ window.addEventListener("keydown", function (e) {
         @keyUpdated="reevaluate"
         @automatic-conversion-changed="toggleAutoUpdateOutput"
         @play-audio-changed="togglePlayAudio"
-        @convert="generateOutput(input)"
+        @mode-changed="toggleMode"
+        @convert="updateOutput()"
       />
     </div>
     <div class="sheet typed">
       <paper-input :text="input" />
     </div>
     <div class="sheet handwriting">
-      <paper-input :text="encoded" />
+      <paper-input :text="output" />
     </div>
   </div>
-  
-    <div class="paper sheet handwriting info">
-      <p>Start typing on your keyboard or click the typewriter's keys to input text</p>
-      <p>To enable encoding, a cipher key has to be set!</p>
-      <p>If automatic conversion is disabled, click on the feather icon to encode the input text.</p>
-    </div>
-  <the-keyboard @key-input="(e) => parseInput(e.key)" :play-audio="playAudio" :key="`keyboard_${playAudio}`" />
+
+  <div class="paper sheet handwriting info">
+    <p>
+      Start typing on your keyboard or click the typewriter's keys to input text
+    </p>
+    <p>To enable encoding, a cipher key has to be set!</p>
+    <p>
+      If automatic conversion is disabled, click on the feather icon to encode
+      the input text.
+    </p>
+  </div>
+  <the-keyboard
+    @key-input="(e) => parseInput(e.key)"
+    :play-audio="playAudio"
+    :key="`keyboard_${playAudio}`"
+  />
 </template>
 
 <style lang="scss">

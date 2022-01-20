@@ -16,24 +16,35 @@
         >No</span
       >
     </div>
-    <div class="min-1em">
-      <font-awesome-icon
-        icon="feather-alt"
-        v-show="!automaticConversion"
-        @click="emit('convert')"
-      />
-    </div>
-    
-      <font-awesome-icon
-        icon="volume-up"
-         v-show="playAudio"
-         @click="changePlayAudio(false)"
-      />
-      <font-awesome-icon
-        icon="volume-mute"
-         v-show="!playAudio"
-         @click="changePlayAudio(true)"
-      />
+    <font-awesome-icon
+      icon="volume-up"
+      v-show="playAudio"
+      @click="changePlayAudio(false)"
+    />
+    <font-awesome-icon
+      icon="volume-mute"
+      v-show="!playAudio"
+      @click="changePlayAudio(true)"
+    />
+    <font-awesome-icon
+      icon="eye-slash"
+      title="Switch to decoding mode"
+      v-show="mode === 'encode'"
+      @click="changeMode('decode')"
+    />
+    <font-awesome-icon
+      icon="eye"
+      title="Switch to encoding mode"
+      v-show="mode === 'decode'"
+      @click="changeMode('encode')"
+    />
+    <font-awesome-icon
+      icon="feather-alt"
+      :title="mode === 'encode' ? 'encode' : 'decode'"
+      :style="{ color: automaticConversion ? '#777' : 'black' }"
+      :class="automaticConversion? 'disabled' : ''"
+      @click="() => { if (!automaticConversion) { emit('convert'); } }"
+    />
   </div>
 </template>
 
@@ -44,14 +55,17 @@ import {
   faFeatherAlt,
   faVolumeUp,
   faVolumeMute,
+  faEye,
+  faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import vigenere from "../services/vigenere";
 
-library.add(faFeatherAlt, faVolumeUp, faVolumeMute);
+library.add(faFeatherAlt, faVolumeUp, faVolumeMute, faEye, faEyeSlash);
 
 const emit = defineEmits([
   "keyUpdated",
+  "modeChanged",
   "playAudioChanged",
   "automaticConversionChanged",
   "convert",
@@ -71,25 +85,38 @@ watch(encodingKey, (newValue, oldValue) => {
   emit("keyUpdated");
 });
 
-const playAudio = ref(localStorage.getItem('playAudio') === 'true');
-  emit("playAudioChanged");
+const playAudio = ref(localStorage.getItem("playAudio") === "true");
 const changePlayAudio = (value: boolean) => {
   if (playAudio.value === value) {
     return;
   }
-  
+
   playAudio.value = value;
-  localStorage.setItem('playAudio', value ? 'true': 'false');
+  localStorage.setItem("playAudio", value ? "true" : "false");
   emit("playAudioChanged");
-}
-const automaticConversion = ref(localStorage.getItem('automaticConversion') === 'true');
+};
+
+const automaticConversion = ref(
+  localStorage.getItem("automaticConversion") === "true"
+);
 const changeAutomaticConversion = (value: boolean) => {
   if (automaticConversion.value === value) {
     return;
   }
   automaticConversion.value = value;
-  localStorage.setItem('automaticConversion', value ? 'true': 'false');
+  localStorage.setItem("automaticConversion", value ? "true" : "false");
   emit("automaticConversionChanged");
+};
+
+const mode = ref(localStorage.getItem("mode") || "encode");
+const changeMode = (value: string) => {
+  if (mode.value === value) {
+    return;
+  }
+
+  mode.value = value;
+  localStorage.setItem("mode", value);
+  emit("modeChanged");
 };
 </script>
 
@@ -126,5 +153,8 @@ const changeAutomaticConversion = (value: boolean) => {
 }
 .svg-inline--fa {
   cursor: pointer;
+  &.disabled {
+    cursor: not-allowed;
+  }
 }
 </style>
