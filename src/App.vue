@@ -7,7 +7,7 @@ import TheConfigNote from "./components/TheConfigNote.vue";
 
 const input = ref("");
 const encoded = ref("");
-const autoUpdateOutput = ref(true);
+const autoUpdateOutput = ref(localStorage.getItem('automaticConversion') === 'true');
 const playAudio = ref(false);
 
 watch(input, () => {
