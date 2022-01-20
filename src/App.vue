@@ -47,11 +47,11 @@ const toggleMode = () => {
   updateOutput();
 };
 
-const updateOutput = () => {
-  if (!input.value) {
-    output.value = "";
-    return;
-  }
+const getOutput = () => {
+   if (!input.value) {
+     return "";
+   }
+
   let result = "";
   switch (mode.value) {
     case "encode":
@@ -63,6 +63,11 @@ const updateOutput = () => {
     default:
       break;
   }
+  return result;
+}
+
+const updateOutput = () => {
+  const result = getOutput();
 
   if (autoUpdateOutput.value) {
     output.value = result;
@@ -88,10 +93,13 @@ window.addEventListener("keydown", function (e) {
   }
 });
 
-const processPaste = (data: string) => {
-  console.log(data);  
-  input.value = data;
-  updateOutput();
+const processPaste = (data: string) => {  
+  input.value = data.toUpperCase();
+
+  if (autoUpdateOutput.value) {
+    const result = getOutput();
+    output.value = result;
+  }
 };
 </script>
 

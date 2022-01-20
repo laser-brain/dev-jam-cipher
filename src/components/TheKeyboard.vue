@@ -52,7 +52,7 @@ const rows = [
 ];
 
 const typeSound = props.playAudio
-  ? new Audio("/src/assets/audio/type.wav")
+  ? new Audio("/assets/type.wav")
   : null;
 
 onMounted(() => {
