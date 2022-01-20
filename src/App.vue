@@ -74,7 +74,7 @@ const updateOutput = () => {
       if (i === partialResult.length) {
         clearInterval(write);
       }
-    }, 200);
+    }, 128);
   }
 };
 
