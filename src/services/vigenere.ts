@@ -57,7 +57,7 @@ class Vigenere {
   }
 
   encode(input: string): string {
-    if (!this._key) {
+    if (!this._key || !input) {
       return input;
     }
 
@@ -81,7 +81,7 @@ class Vigenere {
   }
 
   decode(input: string): string {
-    if (!this._key) {
+    if (!this._key || !input) {
       return input;
     }
     var key = this.getKeyForInput(input);
