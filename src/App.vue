@@ -15,7 +15,7 @@ const mode = ref(localStorage.getItem("mode") || "encode");
 
 watch(input, () => {
   if (autoUpdateOutput.value) {
-    updateOutput();
+    updateOutput(false);
   }
 });
 
@@ -29,7 +29,7 @@ const parseInput = (text: string) => {
 
 const reevaluate = () => {
   localStorage.setItem("cipherKey", vigenere._key);
-  updateOutput();
+  updateOutput(false);
 };
 
 const toggleAutoUpdateOutput = () => {
@@ -38,19 +38,19 @@ const toggleAutoUpdateOutput = () => {
   if (!autoUpdateOutput.value) {
     output.value = "";
   } else {
-    updateOutput();
+    updateOutput(true);
   }
 };
 
 const toggleMode = () => {
   mode.value = mode.value === "encode" ? "decode" : "encode";
-  updateOutput();
+  updateOutput(true);
 };
 
 const getOutput = () => {
-   if (!input.value) {
-     return "";
-   }
+  if (!input.value) {
+    return "";
+  }
 
   let result = "";
   switch (mode.value) {
@@ -64,13 +64,15 @@ const getOutput = () => {
       break;
   }
   return result;
-}
+};
 
-const updateOutput = () => {
+const updateOutput = (reset: boolean) => {
   const result = getOutput();
-
+  debugger;
   if (autoUpdateOutput.value) {
     output.value = result;
+  } else if (reset) {
+    output.value = "";
   } else {
     const partialResult = result.substring(output.value.length);
     let i = 0;
@@ -93,7 +95,7 @@ window.addEventListener("keydown", function (e) {
   }
 });
 
-const processPaste = (data: string) => {  
+const processPaste = (data: string) => {
   input.value = data.toUpperCase();
 
   if (autoUpdateOutput.value) {
@@ -111,7 +113,7 @@ const processPaste = (data: string) => {
         @automatic-conversion-changed="toggleAutoUpdateOutput"
         @play-audio-changed="togglePlayAudio"
         @mode-changed="toggleMode"
-        @convert="updateOutput()"
+        @convert="updateOutput(false)"
       />
     </div>
     <div class="sheet typed">
@@ -197,7 +199,7 @@ body,
   height: 30vh;
   width: 23vw;
   padding: 2em;
-  font-size: .1em;
+  font-size: 0.1em;
 }
 
 #app {
