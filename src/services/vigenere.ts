@@ -61,7 +61,7 @@ class Vigenere {
       return input;
     }
 
-    input = input.toLocaleUpperCase();
+    input = input.toUpperCase();
     let result = "";
     const key = this.getKeyForInput(input);
 

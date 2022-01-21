@@ -35,6 +35,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, Ref } from "@vue/runtime-core";
 import { ref } from "vue";
+import typeSoundUrl from '/src/assets/type.wav'
 
 const props = defineProps({
   playAudio: {
@@ -52,7 +53,7 @@ const rows = [
 ];
 
 const typeSound = props.playAudio
-  ? new Audio("/assets/type.wav")
+  ? new Audio(typeSoundUrl)
   : null;
 
 onMounted(() => {
